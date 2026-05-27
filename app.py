@@ -27,32 +27,32 @@ else:
     # Create two big, beautiful buttons
     col1, col2 = st.columns(2)
     
-    with col1:
+     with col1:
         if st.button("📸 Magic Mirror (Image Search)"):
             st.session_state.page = "image_search"
             
-    with col2:
+     with col2:
         if st.button("🎨 Design Studio (Create Outfit)"):
             st.session_state.page = "design_studio"
             
     # Show content based on which button was clicked
-    if 'page' in st.session_state:
+     if 'page' in st.session_state:
         if st.session_state.page == "design_studio":
             st.write("### Welcome to the Design Studio")
             # --- MANNEQUIN UI GOES HERE ---
        with studio:
-            st.subheader("🎨 Virtual Dress-Up Studio")
+                   st.subheader("🎨 Virtual Dress-Up Studio")
     
     # Selection Controls
     col_ctrl, col_view = st.columns([1, 1])
     
-    with col_ctrl:
+     with col_ctrl:
         skin = st.color_picker("Skin Tone", "#FFD1A9")
         top_c = st.color_picker("Top Color", "#FF6B6B")
         bot_c = st.color_picker("Bottom Color", "#4ECDC4")
         neck_type = st.selectbox("Neckline", ["Crew", "V-Neck", "Cowl", "Bandh-gala"])
         
-    with col_view:
+     with col_view:
         # The Mannequin Engine (SVG Code)
         st.markdown(f"""
         <svg width="200" height="400" viewBox="0 0 200 400">
