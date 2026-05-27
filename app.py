@@ -49,8 +49,7 @@ else:
             
         with col_view:
             # The Mannequin Engine (Layered SVG)
-     import streamlit as st
-
+            
 st.set_page_config(page_title="Fashion Sanctuary Game", layout="wide")
 
 # Session state to store user's current "wardrobe" choices
