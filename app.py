@@ -49,14 +49,47 @@ else:
             
         with col_view:
             # The Mannequin Engine (Layered SVG)
-            st.markdown(f"""
-            <div style="text-align: center;">
-                <svg width="200" height="400" viewBox="0 0 200 400">
-                    <circle cx="100" cy="50" r="40" fill="{skin}" />
-                    <rect x="50" y="100" width="100" height="120" rx="10" fill="{top_c}" />
-                    <rect x="60" y="230" width="80" height="150" rx="10" fill="{bot_c}" />
-                    <text x="100" y="160" font-family="Arial" font-size="12" fill="white" text-anchor="middle">{neck_type}</text>
-                </svg>
-            </div>
-            """, unsafe_allow_html=True)
+     import streamlit as st
+
+st.set_page_config(page_title="Fashion Sanctuary Game", layout="wide")
+
+# Session state to store user's current "wardrobe" choices
+if 'top_color' not in st.session_state:
+    st.session_state.top_color = "#FF6B6B"
+    st.session_state.bot_color = "#4ECDC4"
+    st.session_state.neck = "Crew"
+
+st.title("🎮 Fashion Sanctuary: Dress-Up Studio")
+
+# Layout: Sidebar for "Dressing Room" controls
+with st.sidebar:
+    st.header("👗 Dressing Room")
+    st.session_state.top_color = st.color_picker("Top Color", st.session_state.top_color)
+    st.session_state.bot_color = st.color_picker("Bottom Color", st.session_state.bot_color)
+    st.session_state.neck = st.selectbox("Neckline Style", ["Crew", "V-Neck", "Cowl", "Bandh-gala", "Halter"])
+    st.session_state.style = st.selectbox("Style Category", ["Western", "Indian", "Fusion"])
+
+# Main Canvas: The "Doll" Area
+st.subheader("Your Mannequin")
+st.markdown(f"""
+<div style="display: flex; justify-content: center; align-items: center; height: 500px; background-color: #f0f2f6; border-radius: 20px;">
+    <svg width="300" height="500" viewBox="0 0 300 500">
+        <circle cx="150" cy="80" r="50" fill="#FFD1A9" />
+        <rect x="120" y="130" width="60" height="200" rx="10" fill="#FFD1A9" />
+        
+        <rect x="80" y="140" width="140" height="100" rx="15" fill="{st.session_state.top_color}" />
+        <text x="150" y="190" font-family="Verdana" font-size="14" fill="white" text-anchor="middle">{st.session_state.neck}</text>
+        
+        <rect x="90" y="240" width="120" height="150" rx="10" fill="{st.session_state.bot_color}" />
+        
+        <text x="150" y="450" font-family="Arial" font-size="20" font-weight="bold" fill="#333" text-anchor="middle">
+            Style: {st.session_state.style}
+        </text>
+    </svg>
+</div>
+""", unsafe_allow_html=True)
+
+st.write("---")
+st.info("💡 **How to play:** Use the sidebar on the left to change your outfit. The mannequin updates in real-time!")
+
             
