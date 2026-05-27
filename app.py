@@ -41,7 +41,7 @@ else:
             st.write("### Welcome to the Design Studio")
             # --- MANNEQUIN UI GOES HERE ---
        with studio:
-    st.subheader("🎨 Virtual Dress-Up Studio")
+            st.subheader("🎨 Virtual Dress-Up Studio")
     
     # Selection Controls
     col_ctrl, col_view = st.columns([1, 1])
