@@ -1,75 +1,65 @@
 import streamlit as st
-import pandas as pd
 
-# 1. THE SHOPPING WAREHOUSE (Mock Data)
-# In a full app, this would pull from millions of real clothes across the web
-inventory = [
-    {"name": "Silk Cowl-Neck Camisole", "brand": "Zara via App", "category": "Top", "neckline": "Cowl Neck", "back_style": "Standard", "price": 39.99, "quality": "High (100% Silk)", "chest": 88, "waist": 70},
-    {"name": "Satin Drape V-Neck Top", "brand": "ASOS via App", "category": "Top", "neckline": "V-Neck", "back_style": "Standard", "price": 25.00, "quality": "Medium (Satin-Poly)", "chest": 86, "waist": 68},
-    {"name": "Backless Summer Crop Top", "brand": "H&M via App", "category": "Top", "neckline": "V-Neck", "back_style": "Backless", "price": 19.99, "quality": "Medium (Linen Blend)", "chest": 84, "waist": 66},
-    {"name": "Racerback Ribbed Tank", "brand": "Nordstrom via App", "category": "Top", "neckline": "Scoop Neck", "back_style": "Racerback", "price": 22.50, "quality": "High (Ribbed Cotton)", "chest": 90, "waist": 72},
-    {"name": "High-Waisted Wide-Leg Trousers", "brand": "Mango via App", "category": "Bottom", "neckline": "N/A", "back_style": "N/A", "price": 59.99, "quality": "High (Tailored Wool Blend)", "chest": 0, "waist": 70},
-    {"name": "Relaxed Tailored Chinos", "brand": "Amazon Fashion", "category": "Bottom", "neckline": "N/A", "back_style": "N/A", "price": 29.99, "quality": "Medium (Cotton Twill)", "chest": 0, "waist": 74}
-]
-df = pd.DataFrame(inventory)
+# Setup Page
+st.set_page_config(page_title="Fashion Sanctuary", layout="wide")
 
-# 2. WEBSITE VISUAL LAYOUT
-st.set_page_config(page_title="Universal Fashion Search", page_icon="👔", layout="wide")
-st.title("👔 Universal Omnichannel Fashion Search Engine")
-st.write("Find the exact clothing items looking across all shopping platforms, tailored to your budget and exact body fit.")
+# 1. THE WELCOME PORTAL (Only shows if 'initialized' is False)
+if 'initialized' not in st.session_state:
+    st.title("✨ Welcome to your Fashion Sanctuary")
+    st.write("Let's set up your profile for a perfect fit.")
+    
+    st.session_state.gender = st.radio("Select Profile", ["Masculine", "Feminine", "Neutral/Fluid"])
+    st.session_state.unit = st.radio("Measurement Unit", ["cm", "inches"])
+    
+    if st.session_state.unit == "cm":
+        st.session_state.chest = st.number_input("Chest (cm)")
+    else:
+        st.session_state.chest = st.number_input("Chest (inches)") * 2.54
+        
+    if st.button("Enter Studio"):
+        st.session_state.initialized = True
+        st.rerun() # Refresh to show Main Page
 
-st.markdown("---")
-
-# Sidebar for inputs
-st.sidebar.header("📐 Step 1: Your Perfect Fit Profile")
-user_chest = st.sidebar.number_input("Chest Circumference (cm)", value=88)
-user_waist = st.sidebar.number_input("Waist Circumference (cm)", value=70)
-
-st.sidebar.header("🎨 Step 2: Design Your Outfit")
-search_mode = st.sidebar.radio("Choose Search Type:", ["Custom Outfit Builder", "Image Upload Search (Simulation)"])
-
-if search_mode == "Custom Outfit Builder":
-    neck_select = st.sidebar.selectbox("Top Neckline", ["Cowl Neck", "V-Neck", "Scoop Neck"])
-    back_select = st.sidebar.selectbox("Top Back Style", ["Standard", "Backless", "Racerback"])
-    bottom_select = st.sidebar.selectbox("Bottom Silhouette", ["Wide-Leg Trousers", "Tailored Chinos"])
+# 2. THE MAIN PAGE (Creative Hub)
 else:
-    uploaded_file = st.sidebar.file_uploader("Upload style inspiration image...", type=["jpg", "png", "jpeg"])
-    st.sidebar.info("Simulation mode: Uploading an image parses style tags automatically using AI features.")
-    neck_select, back_select, bottom_select = "Cowl Neck", "Standard", "Wide-Leg Trousers" # Fallback defaults for simulation
-
-# 3. SEARCH & MATCHING ENGINE LOGIC
-if st.sidebar.button("Scan All Shopping Apps", type="primary"):
-    st.subheader("✨ Sourced Marketplace Matches Found For You")
+    st.markdown("<h1 style='text-align: center; color: #FF6B6B;'>Welcome back to your Sanctuary!</h1>", unsafe_allow_html=True)
     
-    # Filter by Style Configurations
-    if search_mode == "Custom Outfit Builder":
-        filtered_df = df[
-            ((df["neckline"] == neck_select) & (df["back_style"] == back_select)) | 
-            (df["name"].str.contains(bottom_select.split('-')[0], case=False))
-        ]
-    else:
-        filtered_df = df.copy() # Simulation returns full catalog for visual matching demo
-        
-    # Filter by Fit Profile (Allowing a tiny +/- 4cm tolerance)
-    valid_matches = filtered_df[
-        ((filtered_df["category"] == "Top") & (abs(filtered_df["chest"] - user_chest) <= 4)) |
-        ((filtered_df["category"] == "Bottom") & (abs(filtered_df["waist"] - user_waist) <= 4))
-    ]
+    # Create two big, beautiful buttons
+    col1, col2 = st.columns(2)
     
-    if valid_matches.empty:
-        st.warning("No exact item matches your physical dimension thresholds on major retail networks right now. Try slightly adjusting size tolerances.")
-    else:
-        # Sort by lowest price & high quality
-        sorted_results = valid_matches.sort_values(by=["price", "quality"], ascending=[True, False])
+    with col1:
+        if st.button("📸 Magic Mirror (Image Search)"):
+            st.session_state.page = "image_search"
+            
+    with col2:
+        if st.button("🎨 Design Studio (Create Outfit)"):
+            st.session_state.page = "design_studio"
+            
+    # Show content based on which button was clicked
+    if 'page' in st.session_state:
+        if st.session_state.page == "design_studio":
+            st.write("### Welcome to the Design Studio")
+            # --- MANNEQUIN UI GOES HERE ---
+       with studio:
+    st.subheader("🎨 Virtual Dress-Up Studio")
+    
+    # Selection Controls
+    col_ctrl, col_view = st.columns([1, 1])
+    
+    with col_ctrl:
+        skin = st.color_picker("Skin Tone", "#FFD1A9")
+        top_c = st.color_picker("Top Color", "#FF6B6B")
+        bot_c = st.color_picker("Bottom Color", "#4ECDC4")
+        neck_type = st.selectbox("Neckline", ["Crew", "V-Neck", "Cowl", "Bandh-gala"])
         
-        # Display items nicely on the screen
-        for index, row in sorted_results.iterrows():
-            with st.container():
-                col1, col2 = st.columns([3, 1])
-                with col1:
-                    st.markdown(f"### **{row['name']}**")
-                    st.caption(f"Sourced Platform: **{row['brand']}** | Material: *{row['quality']}*")
-                with col2:
-                    st.markdown(f"## **${row['price']}**")
-                st.info(f"✅ Sizing Match Validated: Configured specifications seamlessly match your personal dimensions.")
-                st.markdown("---")
+    with col_view:
+        # The Mannequin Engine (SVG Code)
+        st.markdown(f"""
+        <svg width="200" height="400" viewBox="0 0 200 400">
+            <circle cx="100" cy="50" r="40" fill="{skin}" />
+            <rect x="50" y="100" width="100" height="120" rx="10" fill="{top_c}" />
+            <rect x="60" y="230" width="80" height="150" rx="10" fill="{bot_c}" />
+            <text x="100" y="160" font-family="Arial" font-size="12" fill="white" text-anchor="middle">{neck_type}</text>
+        </svg>
+        """, unsafe_allow_html=True)
+    
